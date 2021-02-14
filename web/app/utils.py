@@ -1,4 +1,5 @@
 from app import app
+from flask_restful import fields
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime as dt
@@ -18,3 +19,8 @@ class FileHandler:
         if self.photo and self.allowed_file():
             self.photo.save(os.path.join(app.config['UPLOAD_FOLDER'], self.filename))
             return self.filename
+
+
+class EnumItem(fields.Raw):
+    def format(self, value):
+        return value.value

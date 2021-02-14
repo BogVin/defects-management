@@ -6,22 +6,7 @@ from datetime import datetime as dt
 import base64
 
 
-class StatusItem(fields.Raw):
-    def format(self, value):
-        return value.value
-
-
-class InfoItem(fields.Raw):
-    def format(self, value):
-        return value.id
-
-
-class UserItem(fields.Raw):
-    def format(self, value):
-        return value.telegram_id
-
-
-class DefectItem(fields.Raw):
+class IdItem(fields.Raw):
     def format(self, value):
         return value.id
 
@@ -32,18 +17,18 @@ resource_fields = {
     'description': fields.String,
     'room': fields.Integer,
     'attachment': fields.String,
-    'info': InfoItem
+    'info': IdItem
 }
 
 resource_info_fields = {
     'id': fields.Integer,
     'created_by': fields.Integer,
     'worker': fields.Integer,
-    'status': StatusItem,
+    'status': utils.EnumItem,
     'open_date': fields.DateTime,
     'close_date': fields.DateTime,
     'defect_id': fields.Integer,
-    'defect': DefectItem
+    'defect': IdItem
 }
 
 

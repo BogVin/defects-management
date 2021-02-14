@@ -3,11 +3,7 @@ from app import models
 from app import db
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask import jsonify
-
-
-class RoleItem(fields.Raw):
-    def format(self, value):
-        return value.value
+from app import utils
 
 
 resource_fields = {
@@ -15,7 +11,7 @@ resource_fields = {
     'first_name': fields.String,
     'last_name': fields.String,
     'username': fields.String,
-    'role': RoleItem,
+    'role': utils.EnumItem,
     'is_active': fields.Boolean
 }
 
