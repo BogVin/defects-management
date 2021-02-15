@@ -17,15 +17,15 @@ resource_fields = {
 
 user_puts_args = reqparse.RequestParser()
 user_puts_args.add_argument("telegram_id", type=str, help="Enter user id", required=True)
-user_puts_args.add_argument("first_name", type=str, help="User name", required=True)
-user_puts_args.add_argument("last_name", type=str, help="Last name", required=True)
-user_puts_args.add_argument("username", type=str, help="Username", required=True)
+user_puts_args.add_argument("first_name", type=str, help="Enter first name", required=True)
+user_puts_args.add_argument("last_name", type=str)
+user_puts_args.add_argument("username", type=str)
 
 
 user_update_args = reqparse.RequestParser()
 user_update_args.add_argument("first_name", type=str, help="Name", required=True)
-user_update_args.add_argument("last_name", type=str, help="Last name", required=True)
-user_update_args.add_argument("username", type=str, help="Username ", required=True)
+user_update_args.add_argument("last_name", type=str)
+user_update_args.add_argument("username", type=str)
 user_update_args.add_argument("role", type=str, help="Role", required=True)
 user_update_args.add_argument("is_active", type=bool, help="Is active", required=True)
 
@@ -49,8 +49,8 @@ class TUserList(Resource):
         result = models.TelegramUser.query.filter_by(telegram_id=args["telegram_id"]).first()
         if result:
             abort(409, message="User already exist")
-
-        user = models.TelegramUser(telegram_id=args['telegram_id'], first_name=args['first_name'], last_name=args['last_name'], username=args['username'],)
+        
+        user = models.TelegramUser(telegram_id=args['telegram_id'], first_name=args['first_name'], last_name=args['last_name'], username=args['username'])
         db.session.add(user)
         db.session.commit()
         return user, 201
