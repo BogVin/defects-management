@@ -93,13 +93,25 @@ class TUser(Resource):
         return {"message": "User deleted successfully"}
 
 
-class TUserLogin(Resource):
+class TBotLogin(Resource):
     def post(self, telegram_id):
         user = models.TelegramUser.query.filter_by(telegram_id=telegram_id).first()
         if not user:
-            abort(401, message="Wrong user id")
+            abort(401, message="Wrong telegram user id")
         if user.is_active:
             access_token = create_access_token(identity=telegram_id)
             return jsonify(access_token=access_token)
         else:
             return {"message": "You not active, wait for you activation"}
+
+
+class TBot(Resource):
+    @jwt_required
+    @marshal_with(resource_fields)
+    def get(self, telegram_id):
+        user = models.TelegramUser.query.filter_by(telegram_id=telegram_id).first()
+        if not user:
+            abort(404, message="Telegram user not found")
+        
+        return user
+
