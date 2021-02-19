@@ -99,7 +99,7 @@ class TBotLogin(Resource):
         if not user:
             abort(401, message="Wrong telegram user id")
         if user.is_active:
-            access_token = create_access_token(identity=telegram_id)
+            access_token = create_access_token(identity=telegram_id, expires_delta=False)
             return jsonify(access_token=access_token)
         else:
             return {"message": "You not active, wait for you activation"}
