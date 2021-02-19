@@ -1,13 +1,17 @@
 from app import app
 from flask_restful import fields
 import os
+import os.path
 from werkzeug.utils import secure_filename
 from datetime import datetime as dt
 
 
 class FileHandler:
     def __init__(self, photo, user_id):
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        if os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        else:
+            os.makedirs(app.config['UPLOAD_FOLDER'])
         self.filename = user_id + "_" + str(dt.utcnow()) + secure_filename(photo.filename)
         self.photo = photo
 

@@ -34,7 +34,7 @@ class Admin(db.Model):
 class TelegramUser(db.Model):
     __table_name__ = "telegram_users"
     id = db.Column(db.Integer, primary_key=True)
-    telegram_id = db.Column(db.String(20), nullable=False)
+    telegram_id = db.Column(db.String(20), nullable=False, unique=True)
     first_name = db.Column(db.String(60), nullable=False)
     last_name = db.Column(db.String(60))
     username = db.Column(db.String(60))

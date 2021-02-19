@@ -19,5 +19,5 @@ class AdminLogin(Resource):
         if not password or not admin.check_password(password):
             return abort(401, message="Wrong password")
 
-        access_token = create_access_token(identity=email)
+        access_token = create_access_token(identity=email, expires_delta=False)
         return jsonify(access_token=access_token)
