@@ -1,4 +1,4 @@
-from flask_restful import Resource, fields, marshal_with, abort,  reqparse
+from flask_restful import Resource, fields, marshal_with, abort,  reqparse, inputs
 from app import app, models, db, utils
 import werkzeug
 from flask_jwt_extended import jwt_required
@@ -51,6 +51,12 @@ defect_info_args.add_argument("worker", type=str, help="Worker", required=True)
 defect_info_args.add_argument("status", type=str, help="Status", required=True)
 
 
+defect_date_status_args = reqparse.RequestParser()
+defect_date_status_args.add_argument("status", type=str, help="Status", required=True)
+defect_date_status_args.add_argument("open_date", type=inputs.datetime_from_rfc822, required=True)
+defect_date_status_args.add_argument("close_date", type=inputs.datetime_from_rfc822)
+
+
 class DefectList(Resource):
     @jwt_required
     @marshal_with(resource_fields)
@@ -67,10 +73,13 @@ class DefectPost(Resource):
     def post(self):
         args = defect_puts_args.parse_args()
         photo = args['attachment']
-        fh = utils.FileHandler(photo, args['created_by'])
-        fh.save()
+        attachment = None
+        if photo:
+            fh = utils.FileHandler(photo, args['created_by'])
+            fh.save()
+            attachment = fh.filename
         defect = models.Defect(title=args['title'], description=args['description'],
-                               room=args['room'], attachment=fh.filename)
+                               room=args['room'], attachment=attachment)
         user = models.TelegramUser.query.filter_by(telegram_id=args['created_by']).first()
         defect_info = models.DefectInfo(created_by_user=user, defect=defect)
         db.session.add(defect)
@@ -131,7 +140,7 @@ class DefectInfo(Resource):
         if not defect_info:
             abort(404, message="Doesn't exist")
         user = models.TelegramUser.query.filter_by(telegram_id=args['worker']).first()
-        defect_info.worker = user
+        defect_info.work_by_user = user
         defect_info.status = args['status']
         if defect_info.status == models.Status.closed.name:
             defect_info.close_date = dt.utcnow()
@@ -148,3 +157,38 @@ class DefectImage(Resource):
         except FileNotFoundError:
             abort(404, message="Image not found")
         return {"image encode": str(encoded_image)}
+
+
+class DefectsByStatus(Resource):
+    @jwt_required
+    @marshal_with(resource_fields)
+    def get(self, status):
+        defects = models.Defect.query.join(models.Defect.info, aliased=True).filter_by(status=status).all()
+        if not defects:
+            abort(404, message="No defects with this status")
+        return defects
+
+
+class DefectsByDateAndStatus(Resource):
+    @jwt_required
+    @marshal_with(resource_fields)
+    def get(self):
+        args = defect_date_status_args.parse_args()
+        defects = models.Defect.query.join(models.Defect.info, aliased=True).filter_by(status=args['status']).\
+            filter(models.DefectInfo.open_date.between(args['open_date'], args['close_date'])).all()
+        if not defects:
+            abort(404, message="No defects")
+        return defects
+
+
+class DefectsByWorkerId(Resource):
+    @jwt_required
+    @marshal_with(resource_fields)
+    def get(self, worker_id):
+        user = models.TelegramUser.query.filter_by(telegram_id=worker_id).first()
+        if not user:
+            abort(404, message="User not exist")
+        defects = models.Defect.query.join(models.Defect.info, aliased=True).filter_by(work_by_user=user).all()
+        if not defects:
+            abort(404, message="No defects")
+        return defects
