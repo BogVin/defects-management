@@ -30,7 +30,7 @@ api.add_resource(defects_view.DefectsByWorkerId, "/defects/worker/<string:worker
 
 api.add_resource(admin_view.AdminLogin, "/admin/login")
 
-api.add_resource(telegram_users_view.TUserList, "/users/")
+api.add_resource(telegram_users_view.TUserList, "/users")
 api.add_resource(telegram_users_view.TUser, "/users/<int:user_id>")
 api.add_resource(telegram_users_view.TBotLogin, "/users/login/<string:telegram_id>")
 api.add_resource(telegram_users_view.TBot, "/users/me/<string:telegram_id>")
