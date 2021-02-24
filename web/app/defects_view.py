@@ -156,7 +156,7 @@ class DefectImage(Resource):
                 encoded_image = base64.b64encode(image.read())
         except FileNotFoundError:
             abort(404, message="Image not found")
-        return {"image encode": str(encoded_image)}
+        return {"image_encode": str(encoded_image)}
 
 
 class DefectsByStatus(Resource):
