@@ -8,7 +8,7 @@ import base64
 
 class IdItem(fields.Raw):
     def format(self, value):
-        return value.id
+        return value.status.value
 
 
 resource_fields = {
@@ -192,3 +192,5 @@ class DefectsByWorkerId(Resource):
         if not defects:
             abort(404, message="No defects")
         return defects
+
+
