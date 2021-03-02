@@ -5,15 +5,15 @@ from enum import Enum
 
 
 class Role(Enum):
-    not_specified = 'Not Specified'
-    technical_worker = 'Technical Worker'
-    sanitary_worker = "Sanitary Worker"
+    not_specified = "Не визначено"
+    technical_worker = "Технічний працівник"
+    sanitary_worker = "Санітарний працівник"
 
 
 class Status(Enum):
-    open = "Open"
-    in_process = "In Process"
-    closed = "Closed"
+    open = "Відкрито"
+    in_process = "В процесі"
+    closed = "Закрито"
 
 
 class Admin(db.Model):

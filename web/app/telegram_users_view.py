@@ -7,6 +7,7 @@ from app import utils
 
 
 resource_fields = {
+    'id': fields.Integer,
     'telegram_id': fields.String,
     'first_name': fields.String,
     'last_name': fields.String,
@@ -14,6 +15,9 @@ resource_fields = {
     'role': utils.EnumItem,
     'is_active': fields.Boolean
 }
+
+user_active_args = reqparse.RequestParser()
+user_active_args.add_argument("is_active", type=bool, help="User activation status", required=True)
 
 user_puts_args = reqparse.RequestParser()
 user_puts_args.add_argument("telegram_id", type=str, help="Enter user id", required=True)
@@ -115,3 +119,16 @@ class TBot(Resource):
         
         return user
 
+
+class TUserActivation(Resource):
+    @jwt_required
+    @marshal_with(resource_fields)
+    def post(self, user_id):
+        args = user_active_args.parse_args()
+        user = models.TelegramUser.query.get(user_id)
+        if not user:
+            abort(404, message="User doesn't exist")
+        user.is_active = args['is_active']
+        db.session.commit()
+        users = models.TelegramUser.query.all()
+        return users

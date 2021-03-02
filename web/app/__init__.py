@@ -29,8 +29,10 @@ api.add_resource(defects_view.DefectsByDateAndStatus, "/defects/date")
 api.add_resource(defects_view.DefectsByWorkerId, "/defects/worker/<string:worker_id>")
 
 api.add_resource(admin_view.AdminLogin, "/admin/login")
+api.add_resource(admin_view.Admin, "/admin")
 
 api.add_resource(telegram_users_view.TUserList, "/users")
 api.add_resource(telegram_users_view.TUser, "/users/<int:user_id>")
 api.add_resource(telegram_users_view.TBotLogin, "/users/login/<string:telegram_id>")
 api.add_resource(telegram_users_view.TBot, "/users/me/<string:telegram_id>")
+api.add_resource(telegram_users_view.TUserActivation, "/users/active/<int:user_id>")
