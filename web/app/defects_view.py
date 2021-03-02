@@ -6,10 +6,15 @@ from datetime import datetime as dt
 import base64
 
 
-class IdItem(fields.Raw):
+class StatusItem(fields.Raw):
     def format(self, value):
         return value.status.value
 
+
+class IdItem(fields.Raw):
+    def format(self, value):
+        return value.id
+    
 
 resource_fields = {
     'id': fields.Integer,
@@ -17,7 +22,7 @@ resource_fields = {
     'description': fields.String,
     'room': fields.Integer,
     'attachment': fields.String,
-    'info': IdItem
+    'info': StatusItem
 }
 
 resource_info_fields = {
