@@ -50,7 +50,7 @@ class TUserList(Resource):
         args = user_puts_args.parse_args()
         result = models.TelegramUser.query.filter_by(telegram_id=args["telegram_id"]).first()
         if result:
-            abort(409, message="User already exist")
+            abort(409, message="Користувач уже існує")
         
         user = models.TelegramUser(telegram_id=args['telegram_id'], first_name=args['first_name'], last_name=args['last_name'], username=args['username'])
         db.session.add(user)
@@ -99,7 +99,7 @@ class TBotLogin(Resource):
     def post(self, telegram_id):
         user = models.TelegramUser.query.filter_by(telegram_id=telegram_id).first()
         if not user:
-            abort(401, message="Неправельний id")
+            abort(401, message="Неправильний id")
         if user.is_active:
             access_token = create_access_token(identity=telegram_id, expires_delta=False)
             return jsonify(access_token=access_token)
