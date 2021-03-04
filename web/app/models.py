@@ -5,15 +5,15 @@ from enum import Enum
 
 
 class Role(Enum):
-    not_specified = 'Not Specified'
-    technical_worker = 'Technical Worker'
-    sanitary_worker = "Sanitary Worker"
+    not_specified = "Не визначено"
+    technical_worker = "Технічний працівник"
+    sanitary_worker = "Санітарний працівник"
 
 
 class Status(Enum):
-    open = "Open"
-    in_process = "In Process"
-    closed = "Closed"
+    open = "Відкрито"
+    in_process = "В процесі"
+    closed = "Закрито"
 
 
 class Admin(db.Model):
@@ -34,7 +34,7 @@ class Admin(db.Model):
 class TelegramUser(db.Model):
     __table_name__ = "telegram_users"
     id = db.Column(db.Integer, primary_key=True)
-    telegram_id = db.Column(db.String(20), nullable=False)
+    telegram_id = db.Column(db.String(20), nullable=False, unique=True)
     first_name = db.Column(db.String(60), nullable=False)
     last_name = db.Column(db.String(60))
     username = db.Column(db.String(60))
