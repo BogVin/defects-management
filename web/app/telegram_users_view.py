@@ -1,10 +1,9 @@
-from flask_restful import Resource, fields, marshal_with, abort,  reqparse
+from flask_restful import Resource, fields, marshal_with, abort, reqparse
 from app import models
 from app import db
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask import jsonify
 from app import utils
-
 
 resource_fields = {
     'id': fields.Integer,
@@ -16,13 +15,11 @@ resource_fields = {
     'is_active': fields.Boolean
 }
 
-
 user_puts_args = reqparse.RequestParser()
 user_puts_args.add_argument("telegram_id", type=str, help="Вкажіть id", required=True)
 user_puts_args.add_argument("first_name", type=str, help="Ім'я обов'язкове", required=True)
 user_puts_args.add_argument("last_name", type=str)
 user_puts_args.add_argument("username", type=str)
-
 
 user_update_args = reqparse.RequestParser()
 user_update_args.add_argument("first_name", type=str, help="Ім'я обов'язкове", required=True)
@@ -51,8 +48,9 @@ class TUserList(Resource):
         result = models.TelegramUser.query.filter_by(telegram_id=args["telegram_id"]).first()
         if result:
             abort(409, message="Користувач уже існує")
-        
-        user = models.TelegramUser(telegram_id=args['telegram_id'], first_name=args['first_name'], last_name=args['last_name'], username=args['username'])
+
+        user = models.TelegramUser(telegram_id=args['telegram_id'], first_name=args['first_name'],
+                                   last_name=args['last_name'], username=args['username'])
         db.session.add(user)
         db.session.commit()
         return user, 201
@@ -114,7 +112,7 @@ class TBot(Resource):
         user = models.TelegramUser.query.filter_by(telegram_id=telegram_id).first()
         if not user:
             abort(404, message="Користувача не знайдено")
-        
+
         return user
 
 
